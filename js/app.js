@@ -141,7 +141,11 @@ var handleClick = function(event) {
     middleDiv.removeEventListener('click', handleClick);
     rightDiv.removeEventListener('click', handleClick);
 
-    renderList();
+    var h2 = document.createElement('h2');
+    h2.textContent = 'Results';
+    resultsList.appendChild(h2);
+
+    // renderList();
     renderChart();
     return;
   }
@@ -156,10 +160,6 @@ rightDiv.addEventListener('click', handleClick);
 
 // render results list
 var renderList = function() {
-  var h2 = document.createElement('h2');
-  h2.textContent = 'Results';
-  resultsList.appendChild(h2);
-
   var ul = document.createElement('ul');
   for (var product of allProducts) {
     var li = document.createElement('li');
@@ -208,8 +208,9 @@ var colorsBackground = colors.map(c => `rgba(${c}, 0.4)`);
 
 // render chart
 var renderChart = function(){
-  // hide ul
-  resultsList.children[1].style.display = 'none';
+  // hide elements
+  // resultsList.children[1].style.display = 'none';
+  document.getElementById('photos').style.display = 'none';
 
   var chart = new Chart(ctx, {
     type: 'bar',
@@ -218,6 +219,12 @@ var renderChart = function(){
       datasets: [{
         label: '# of Votes',
         data: allProducts.map(p => p.votes),
+        backgroundColor: colorsBackground,
+        borderColor: colorsBorder,
+        borderWidth: 1
+      }, {
+        label: '# of Views',
+        data: allProducts.map(p => p.appeared),
         backgroundColor: colorsBackground,
         borderColor: colorsBorder,
         borderWidth: 1
