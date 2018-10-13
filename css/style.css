@@ -1,3 +1,47 @@
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 20px 0;
+  text-align: center;
+}
+
+header {
+  margin-bottom: 50px;
+}
+
+sup {
+  font-size: 50%;
+  position: relative;
+  top: -10px;
+}
+
+h1 {
+  font-size: 200%;
+}
+
+section {
+  /* border: 1px solid black; */
+  margin-bottom: 50px;
+}
+
+section>div {
+  display: inline-block;
+  margin-right: 40px;
+  border: 1px solid #aaa;
+  text-align: center;
+  cursor: pointer;
+  padding: 20px;
+}
+
+img {
+  /* width: 200px; */
+  height: 200px;
+}
+
+h2 {
+  font-size: 150%;
+  margin-bottom: 10px;
+}
+
+li {
+  margin-bottom: 5px;
 }
