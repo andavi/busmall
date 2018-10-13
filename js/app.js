@@ -5,6 +5,7 @@ var leftDiv = document.getElementById('left');
 var middleDiv = document.getElementById('middle');
 var rightDiv = document.getElementById('right');
 var resultsList = document.getElementById('results');
+var ctx = document.getElementById('chart').getContext('2d');
 
 // Product constructor
 var totalClicks = 0;
@@ -139,7 +140,9 @@ var handleClick = function(event) {
     leftDiv.removeEventListener('click', handleClick);
     middleDiv.removeEventListener('click', handleClick);
     rightDiv.removeEventListener('click', handleClick);
+
     renderList();
+    renderChart();
     return;
   }
 
@@ -165,4 +168,69 @@ var renderList = function() {
     ul.appendChild(li);
   }
   resultsList.appendChild(ul);
+};
+
+// ======================================================
+// CHART
+// ======================================================
+
+// get colors
+// var colors = ['230, 25, 75', '60, 180, 75', '255, 225, 25', '0, 130, 200', '245, 130, 48', '145, 30, 180', '70, 240, 240', '240, 50, 230', '210, 245, 60', '250, 190, 190', '0, 128, 128', '230, 190, 255', '170, 110, 40', '255, 250, 200', '128, 0, 0', '170, 255, 195', '128, 128, 0', '255, 215, 180', '0, 0, 128', '128, 128, 128', '221, 221, 221', '0, 0, 0'];
+
+// rainbow order
+var colors = [
+  '128, 0, 0',
+  '170, 110, 40',
+  '128, 128, 0',
+  '0, 128, 128',
+  '0, 0, 128',
+  '0, 0, 0',
+  '230, 25, 75',
+  '245, 130, 48',
+  '255, 225, 25',
+  '210, 245, 60',
+  '60, 180, 75',
+  '70, 240, 240',
+  '0, 130, 200',
+  '145, 30, 180',
+  '240, 50, 230',
+  '128, 128, 128',
+  '250, 190, 190',
+  '255, 215, 180',
+  '255, 250, 200',
+  '170, 255, 195',
+  '230, 190, 255',
+  '221, 221, 221'
+];
+
+var colorsBorder = colors.map(c => `rgb(${c})`);
+var colorsBackground = colors.map(c => `rgba(${c}, 0.4)`);
+
+// render chart
+var renderChart = function(){
+  // hide ul
+  resultsList.children[1].style.display = 'none';
+
+  var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: allProducts.map(p => p.name),
+      datasets: [{
+        label: '# of Votes',
+        data: allProducts.map(p => p.votes),
+        backgroundColor: colorsBackground,
+        borderColor: colorsBorder,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }
+        }]
+      }
+    }
+  });
 };
