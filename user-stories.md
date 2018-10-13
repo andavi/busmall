@@ -7,3 +7,5 @@
 * As a customer I want a website that is intuitive to understand.
 
 * As a salesman I want to know which photos get the best responses.
+
+* As a customer I want to learn about new and exciting products from BusMall.

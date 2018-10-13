@@ -45,3 +45,8 @@ h2 {
 li {
   margin-bottom: 5px;
 }
+
+#chart-container {
+  width: 70%;
+  margin: auto;
+}
