@@ -57,10 +57,22 @@ Product.prototype.notVoted = function() {
   this.appeared++;
 };
 
+// create index array
+var availableIndices = [];
+for (var i = 0; i < 20; i++) {
+  availableIndices.push(i);
+}
+var deleteIndex = function(item) {
+  availableIndices = availableIndices.filter(i => i !== item);
+};
+
 // render initial images
 var leftIndex = 0;
 var middleIndex = 1;
 var rightIndex = 2;
+deleteIndex(0);
+deleteIndex(1);
+deleteIndex(2);
 
 var renderAll = function() {
   allProducts[leftIndex].render(leftDiv);
@@ -87,9 +99,26 @@ var updateVotes = function(id) {
 };
 
 var updateImages = function() {
-  leftIndex = Math.floor(Math.random() * 20);
-  middleIndex = Math.floor(Math.random() * 20);
-  rightIndex = Math.floor(Math.random() * 20);
+  // get new random indices from array of available
+  // then delete from available so no duplicates
+  var newLeftIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  deleteIndex(newLeftIndex);
+  var newMiddleIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  deleteIndex(newMiddleIndex);
+  var newRightIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  deleteIndex(newRightIndex);
+
+  // append old indices back into available
+  availableIndices.push(leftIndex);
+  availableIndices.push(middleIndex);
+  availableIndices.push(rightIndex);
+
+  // update variables to prepare for render
+  leftIndex = newLeftIndex;
+  middleIndex = newMiddleIndex;
+  rightIndex = newRightIndex;
+
+  console.log(availableIndices);
   renderAll();
 };
 
