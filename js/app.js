@@ -2,16 +2,8 @@
 
 // get DOM nodes
 var leftDiv = document.getElementById('left');
-var leftImg = leftDiv.children[0];
-var leftTxt = leftDiv.children[1];
-
 var middleDiv = document.getElementById('middle');
-var middleImg = middleDiv.children[0];
-var middleTxt = middleDiv.children[1];
-
 var rightDiv = document.getElementById('right');
-var rightImg = rightDiv.children[0];
-var rightTxt = rightDiv.children[1];
 
 // Product constructor
 var allProducts = [];
@@ -39,10 +31,10 @@ new Product('img/pen.jpg', 'Pen');
 new Product('img/pet-sweep.jpg', 'Pet Sweep');
 new Product('img/scissors.jpg', 'Scissors');
 new Product('img/shark.jpg', 'Shark');
-new Product('img/sweep.jpg', 'Sweep');
+new Product('img/sweep.png', 'Sweep');
 new Product('img/tauntaun.jpg', 'Tauntaun');
 new Product('img/unicorn.jpg', 'Unicorn');
-new Product('img/usb.jpg', 'USB');
+new Product('img/usb.gif', 'USB');
 new Product('img/water-can.jpg', 'Water Can');
 new Product('img/wine-glass.jpg', 'Wine Glass');
 
@@ -56,6 +48,27 @@ Product.prototype.render = function(node) {
 };
 
 // render initial images
-allProducts[0].render(leftDiv);
-allProducts[1].render(middleDiv);
-allProducts[2].render(rightDiv);
+var leftIndex = 0;
+var middleIndex = 1;
+var rightIndex = 2;
+
+var renderAll = function() {
+  allProducts[leftIndex].render(leftDiv);
+  allProducts[middleIndex].render(middleDiv);
+  allProducts[rightIndex].render(rightDiv);
+};
+
+renderAll();
+
+// click handler
+var handleClick = function(event) {
+  leftIndex = (leftIndex + 3) % 20;
+  middleIndex = (middleIndex + 3) % 20;
+  rightIndex = (rightIndex + 3) % 20;
+  renderAll();
+};
+
+// add event listeners
+leftDiv.addEventListener('click', handleClick);
+middleDiv.addEventListener('click', handleClick);
+rightDiv.addEventListener('click', handleClick);
