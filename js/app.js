@@ -4,6 +4,7 @@
 var leftDiv = document.getElementById('left');
 var middleDiv = document.getElementById('middle');
 var rightDiv = document.getElementById('right');
+var resultsList = document.getElementById('results');
 
 // Product constructor
 var totalClicks = 0;
@@ -57,7 +58,7 @@ Product.prototype.notVoted = function() {
   this.appeared++;
 };
 
-// create index array
+// create available index (of allProducts) array
 var availableIndices = [];
 for (var i = 0; i < 20; i++) {
   availableIndices.push(i);
@@ -98,15 +99,18 @@ var updateVotes = function(id) {
   }
 };
 
+var getAndRemoveIndex = function() {
+  var index = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  deleteIndex(index);
+  return index;
+};
+
 var updateImages = function() {
   // get new random indices from array of available
   // then delete from available so no duplicates
-  var newLeftIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-  deleteIndex(newLeftIndex);
-  var newMiddleIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-  deleteIndex(newMiddleIndex);
-  var newRightIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-  deleteIndex(newRightIndex);
+  var newLeftIndex = getAndRemoveIndex();
+  var newMiddleIndex = getAndRemoveIndex();
+  var newRightIndex = getAndRemoveIndex();
 
   // append old indices back into available
   availableIndices.push(leftIndex);
@@ -118,7 +122,6 @@ var updateImages = function() {
   middleIndex = newMiddleIndex;
   rightIndex = newRightIndex;
 
-  console.log(availableIndices);
   renderAll();
 };
 
@@ -131,6 +134,15 @@ var handleClick = function(event) {
 
   var id = event.target.id ? event.target.id : event.target.parentElement.id;
   updateVotes(id);
+
+  if (totalClicks >= 25) {
+    leftDiv.removeEventListener('click', handleClick);
+    middleDiv.removeEventListener('click', handleClick);
+    rightDiv.removeEventListener('click', handleClick);
+    renderList();
+    return;
+  }
+
   updateImages();
 };
 
@@ -138,3 +150,19 @@ var handleClick = function(event) {
 leftDiv.addEventListener('click', handleClick);
 middleDiv.addEventListener('click', handleClick);
 rightDiv.addEventListener('click', handleClick);
+
+// render results list
+var renderList = function() {
+  var h2 = document.createElement('h2');
+  h2.textContent = 'Results';
+  resultsList.appendChild(h2);
+
+  var ul = document.createElement('ul');
+  for (var product of allProducts) {
+    var li = document.createElement('li');
+    var plural = product.votes === 1 ? '' : 's';
+    li.textContent = `${product.votes} vote${plural} for the ${product.name}`;
+    ul.appendChild(li);
+  }
+  resultsList.appendChild(ul);
+};
