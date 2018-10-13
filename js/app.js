@@ -6,6 +6,7 @@ var middleDiv = document.getElementById('middle');
 var rightDiv = document.getElementById('right');
 
 // Product constructor
+var totalClicks = 0;
 var allProducts = [];
 
 var Product = function(src, name) {
@@ -47,6 +48,15 @@ Product.prototype.render = function(node) {
   text.textContent = this.name;
 };
 
+Product.prototype.voted = function() {
+  this.votes++;
+  this.appeared++;
+};
+
+Product.prototype.notVoted = function() {
+  this.appeared++;
+};
+
 // render initial images
 var leftIndex = 0;
 var middleIndex = 1;
@@ -57,15 +67,42 @@ var renderAll = function() {
   allProducts[middleIndex].render(middleDiv);
   allProducts[rightIndex].render(rightDiv);
 };
-
 renderAll();
+
+// helper functions
+var updateVotes = function(id) {
+  if (id === 'left') {
+    allProducts[leftIndex].voted();
+    allProducts[middleIndex].notVoted();
+    allProducts[rightIndex].notVoted();
+  } else if (id === 'middle') {
+    allProducts[leftIndex].notVoted();
+    allProducts[middleIndex].voted();
+    allProducts[rightIndex].notVoted();
+  } else {
+    allProducts[leftIndex].notVoted();
+    allProducts[middleIndex].notVoted();
+    allProducts[rightIndex].voted();
+  }
+};
+
+var updateImages = function() {
+  leftIndex = Math.floor(Math.random() * 20);
+  middleIndex = Math.floor(Math.random() * 20);
+  rightIndex = Math.floor(Math.random() * 20);
+  renderAll();
+};
 
 // click handler
 var handleClick = function(event) {
-  leftIndex = (leftIndex + 3) % 20;
-  middleIndex = (middleIndex + 3) % 20;
-  rightIndex = (rightIndex + 3) % 20;
-  renderAll();
+  event.preventDefault();
+  event.stopPropagation();
+
+  totalClicks++;
+
+  var id = event.target.id ? event.target.id : event.target.parentElement.id;
+  updateVotes(id);
+  updateImages();
 };
 
 // add event listeners
