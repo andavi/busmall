@@ -20,84 +20,59 @@ var Product = function(src, name) {
 };
 
 // create Product objects
-new Product('img/bag.jpg', 'Bag');
-new Product('img/banana.jpg', 'Banana');
-new Product('img/bathroom.jpg', 'Bathroom');
-new Product('img/boots.jpg', 'Boots');
-new Product('img/breakfast.jpg', 'Breakfast');
-new Product('img/bubblegum.jpg', 'Bubblegum');
-new Product('img/chair.jpg', 'Chair');
-new Product('img/cthulhu.jpg', 'Cthulhu');
-new Product('img/dog-duck.jpg', 'Dog Duck');
-new Product('img/dragon.jpg', 'Dragon');
-new Product('img/pen.jpg', 'Pen');
-new Product('img/pet-sweep.jpg', 'Pet Sweep');
-new Product('img/scissors.jpg', 'Scissors');
-new Product('img/shark.jpg', 'Shark');
-new Product('img/sweep.png', 'Sweep');
-new Product('img/tauntaun.jpg', 'Tauntaun');
-new Product('img/unicorn.jpg', 'Unicorn');
-new Product('img/usb.gif', 'USB');
-new Product('img/water-can.jpg', 'Water Can');
-new Product('img/wine-glass.jpg', 'Wine Glass');
+if (!localStorage.getItem('allProducts')){
+  new Product('img/bag.jpg', 'Bag');
+  new Product('img/banana.jpg', 'Banana');
+  new Product('img/bathroom.jpg', 'Bathroom');
+  new Product('img/boots.jpg', 'Boots');
+  new Product('img/breakfast.jpg', 'Breakfast');
+  new Product('img/bubblegum.jpg', 'Bubblegum');
+  new Product('img/chair.jpg', 'Chair');
+  new Product('img/cthulhu.jpg', 'Cthulhu');
+  new Product('img/dog-duck.jpg', 'Dog Duck');
+  new Product('img/dragon.jpg', 'Dragon');
+  new Product('img/pen.jpg', 'Pen');
+  new Product('img/pet-sweep.jpg', 'Pet Sweep');
+  new Product('img/scissors.jpg', 'Scissors');
+  new Product('img/shark.jpg', 'Shark');
+  new Product('img/sweep.png', 'Sweep');
+  new Product('img/tauntaun.jpg', 'Tauntaun');
+  new Product('img/unicorn.jpg', 'Unicorn');
+  new Product('img/usb.gif', 'USB');
+  new Product('img/water-can.jpg', 'Water Can');
+  new Product('img/wine-glass.jpg', 'Wine Glass');
+
+  localStorage.setItem('allProducts', JSON.stringify(allProducts));
+} else {
+  allProducts = JSON.parse(localStorage.getItem('allProducts'));
+}
 
 
-// prototype methods
-Product.prototype.render = function(node) {
+
+// static methods
+Product.render = function(node, product) {
   var img = node.children[0];
   var text = node.children[1];
-  img.src = this.src;
-  text.textContent = this.name;
+  img.src = product.src;
+  text.textContent = product.name;
 };
 
-Product.prototype.voted = function() {
-  this.votes++;
-  this.appeared++;
+Product.voted = function(product) {
+  product.votes++;
+  product.appeared++;
 };
 
-Product.prototype.notVoted = function() {
-  this.appeared++;
+Product.notVoted = function(product) {
+  product.appeared++;
 };
 
-// create available index (of allProducts) array
+// create available indices (of allProducts) array
 var availableIndices = [];
-for (var i = 0; i < 20; i++) {
+for (var i = 0; i < allProducts.length; i++) {
   availableIndices.push(i);
 }
 var deleteIndex = function(item) {
   availableIndices = availableIndices.filter(i => i !== item);
-};
-
-// render initial images
-var leftIndex = 0;
-var middleIndex = 1;
-var rightIndex = 2;
-deleteIndex(0);
-deleteIndex(1);
-deleteIndex(2);
-
-var renderAll = function() {
-  allProducts[leftIndex].render(leftDiv);
-  allProducts[middleIndex].render(middleDiv);
-  allProducts[rightIndex].render(rightDiv);
-};
-renderAll();
-
-// helper functions
-var updateVotes = function(id) {
-  if (id === 'left') {
-    allProducts[leftIndex].voted();
-    allProducts[middleIndex].notVoted();
-    allProducts[rightIndex].notVoted();
-  } else if (id === 'middle') {
-    allProducts[leftIndex].notVoted();
-    allProducts[middleIndex].voted();
-    allProducts[rightIndex].notVoted();
-  } else {
-    allProducts[leftIndex].notVoted();
-    allProducts[middleIndex].notVoted();
-    allProducts[rightIndex].voted();
-  }
 };
 
 var getAndRemoveIndex = function() {
@@ -105,6 +80,36 @@ var getAndRemoveIndex = function() {
   deleteIndex(index);
   return index;
 };
+
+// render initial images
+var leftIndex = getAndRemoveIndex();
+var middleIndex = getAndRemoveIndex();
+var rightIndex = getAndRemoveIndex();
+
+var renderAll = function() {
+  Product.render(leftDiv, allProducts[leftIndex]);
+  Product.render(middleDiv, allProducts[middleIndex]);
+  Product.render(rightDiv, allProducts[rightIndex]);
+};
+renderAll();
+
+// helper functions
+var updateVotes = function(id) {
+  if (id === 'left') {
+    Product.voted(allProducts[leftIndex]);
+    Product.notVoted(allProducts[middleIndex]);
+    Product.notVoted(allProducts[middleIndex]);
+  } else if (id === 'middle') {
+    Product.notVoted(allProducts[leftIndex]);
+    Product.voted(allProducts[middleIndex]);
+    Product.notVoted(allProducts[middleIndex]);
+  } else {
+    Product.notVoted(allProducts[leftIndex]);
+    Product.notVoted(allProducts[middleIndex]);
+    Product.voted(allProducts[middleIndex]);
+  }
+};
+
 
 var updateImages = function() {
   // get new random indices from array of available
@@ -133,6 +138,7 @@ var handleClick = function(event) {
 
   totalClicks++;
 
+  // if clicked img or h2 get parent container node
   var id = event.target.id ? event.target.id : event.target.parentElement.id;
   updateVotes(id);
 
@@ -144,6 +150,9 @@ var handleClick = function(event) {
     var h2 = document.createElement('h2');
     h2.textContent = 'Results';
     resultsList.appendChild(h2);
+
+    // update allProducts in localStorage after 25 votes
+    localStorage.setItem('allProducts', JSON.stringify(allProducts));
 
     // renderList();
     renderChart();
@@ -173,9 +182,6 @@ var renderList = function() {
 // ======================================================
 // CHART
 // ======================================================
-
-// get colors
-// var colors = ['230, 25, 75', '60, 180, 75', '255, 225, 25', '0, 130, 200', '245, 130, 48', '145, 30, 180', '70, 240, 240', '240, 50, 230', '210, 245, 60', '250, 190, 190', '0, 128, 128', '230, 190, 255', '170, 110, 40', '255, 250, 200', '128, 0, 0', '170, 255, 195', '128, 128, 0', '255, 215, 180', '0, 0, 128', '128, 128, 128', '221, 221, 221', '0, 0, 0'];
 
 // rainbow order
 var colors = [
@@ -209,7 +215,6 @@ var colorsBackground = colors.map(c => `rgba(${c}, 0.4)`);
 // render chart
 var renderChart = function(){
   // hide elements
-  // resultsList.children[1].style.display = 'none';
   document.getElementById('photos').style.display = 'none';
 
   var chart = new Chart(ctx, {
