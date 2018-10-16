@@ -68,7 +68,7 @@ Product.notVoted = function(product) {
 
 // create available indices (of allProducts) array
 var availableIndices = [];
-for (var i = 0; i < 20; i++) {
+for (var i = 0; i < allProducts.length; i++) {
   availableIndices.push(i);
 }
 var deleteIndex = function(item) {
@@ -138,6 +138,7 @@ var handleClick = function(event) {
 
   totalClicks++;
 
+  // if clicked img or h2 get parent container node
   var id = event.target.id ? event.target.id : event.target.parentElement.id;
   updateVotes(id);
 
@@ -182,9 +183,6 @@ var renderList = function() {
 // CHART
 // ======================================================
 
-// get colors
-// var colors = ['230, 25, 75', '60, 180, 75', '255, 225, 25', '0, 130, 200', '245, 130, 48', '145, 30, 180', '70, 240, 240', '240, 50, 230', '210, 245, 60', '250, 190, 190', '0, 128, 128', '230, 190, 255', '170, 110, 40', '255, 250, 200', '128, 0, 0', '170, 255, 195', '128, 128, 0', '255, 215, 180', '0, 0, 128', '128, 128, 128', '221, 221, 221', '0, 0, 0'];
-
 // rainbow order
 var colors = [
   '128, 0, 0',
@@ -217,7 +215,6 @@ var colorsBackground = colors.map(c => `rgba(${c}, 0.4)`);
 // render chart
 var renderChart = function(){
   // hide elements
-  // resultsList.children[1].style.display = 'none';
   document.getElementById('photos').style.display = 'none';
 
   var chart = new Chart(ctx, {
