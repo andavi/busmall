@@ -66,7 +66,7 @@ Product.notVoted = function(product) {
   product.appeared++;
 };
 
-// create available index (of allProducts) array
+// create available indices (of allProducts) array
 var availableIndices = [];
 for (var i = 0; i < 20; i++) {
   availableIndices.push(i);
@@ -75,13 +75,16 @@ var deleteIndex = function(item) {
   availableIndices = availableIndices.filter(i => i !== item);
 };
 
+var getAndRemoveIndex = function() {
+  var index = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+  deleteIndex(index);
+  return index;
+};
+
 // render initial images
-var leftIndex = 0;
-var middleIndex = 1;
-var rightIndex = 2;
-deleteIndex(0);
-deleteIndex(1);
-deleteIndex(2);
+var leftIndex = getAndRemoveIndex();
+var middleIndex = getAndRemoveIndex();
+var rightIndex = getAndRemoveIndex();
 
 var renderAll = function() {
   Product.render(leftDiv, allProducts[leftIndex]);
@@ -107,11 +110,6 @@ var updateVotes = function(id) {
   }
 };
 
-var getAndRemoveIndex = function() {
-  var index = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-  deleteIndex(index);
-  return index;
-};
 
 var updateImages = function() {
   // get new random indices from array of available
