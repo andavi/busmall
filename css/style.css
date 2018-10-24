@@ -8,6 +8,10 @@ header {
   margin-bottom: 50px;
 }
 
+p {
+  margin-bottom: 30px;
+}
+
 sup {
   font-size: 50%;
   vertical-align: text-top;
